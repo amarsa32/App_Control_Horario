@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import TimeClock from "@/components/TimeClock";
 import WeeklyCards from "@/components/WeeklyCards";
 import HoursChart from "@/components/HoursChart";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   groupEntriesByDate,
@@ -14,7 +14,7 @@ import {
 import type { TimeEntry, DaySummary } from "@/lib/types";
 
 export default function DashboardPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [summaries, setSummaries] = useState<DaySummary[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +48,7 @@ export default function DashboardPage() {
     // Refresh data every 60 seconds
     const interval = setInterval(fetchWeekData, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [supabase]);
 
   const weeklyTotals = getWeeklyTotals(summaries);
   const chartData = getWeeklyChartData(summaries);

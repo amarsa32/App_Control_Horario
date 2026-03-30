@@ -3,7 +3,7 @@
 import Navbar from "@/components/Navbar";
 import HoursChart from "@/components/HoursChart";
 import WeeklyCards from "@/components/WeeklyCards";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   groupEntriesByDate,
@@ -16,7 +16,7 @@ import {
 import type { DaySummary, EntryType } from "@/lib/types";
 
 export default function ReportsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [summaries, setSummaries] = useState<DaySummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedDate, setExpandedDate] = useState<string | null>(null);
@@ -46,7 +46,7 @@ export default function ReportsPage() {
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [supabase]);
 
   const weeklyTotals = getWeeklyTotals(summaries);
   const chartData = getWeeklyChartData(summaries);

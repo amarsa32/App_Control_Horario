@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { TimeEntry, UserState, EntryType } from "@/lib/types";
 import {
@@ -14,7 +14,7 @@ import {
 import { format } from "date-fns";
 
 export default function TimeClock() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [entries, setEntries] = useState<TimeEntry[]>([]);
   const [userState, setUserState] = useState<UserState>("idle");
   const [elapsedDisplay, setElapsedDisplay] = useState("00:00:00");
@@ -42,7 +42,7 @@ export default function TimeClock() {
       setUserState(deriveUserState(data));
     }
     setLoading(false);
-  }, [today]);
+  }, [today, supabase]);
 
   useEffect(() => {
     fetchEntries();
